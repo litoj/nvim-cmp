@@ -6,7 +6,7 @@ local async = {}
 ---@class cmp.AsyncThrottle
 ---@field public running boolean
 ---@field public timeout integer
----@field public sync function(self: cmp.AsyncThrottle, timeout: integer|nil)
+---@field public sync fun(self: cmp.AsyncThrottle, timeout: integer|nil)
 ---@field public stop function
 ---@field public __call function
 
