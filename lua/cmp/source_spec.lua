@@ -106,4 +106,35 @@ describe('source', function()
       end, 100, false)
     end)
   end)
+
+  describe('enabled', function()
+    it('defaults to true', function()
+      local s = source.new('spec', {})
+      assert.is.truthy(s:enabled())
+    end)
+
+    it('honors a boolean', function()
+      config.set_global({ sources = { { name = 'spec', enabled = false } } })
+      local s = source.new('spec', {})
+      assert.is.falsy(s:enabled())
+    end)
+
+    it('calls a function with the context', function()
+      config.set_global({
+        sources = {
+          {
+            name = 'spec',
+            enabled = function(ctx)
+              return ctx.cursor_before_line == 'yes'
+            end,
+          },
+        },
+      })
+      local state = spec.state('', 1, 1)
+      state.input('yes')
+      assert.is.truthy(state.source():enabled())
+      state.input('no')
+      assert.is.falsy(state.source():enabled())
+    end)
+  end)
 end)

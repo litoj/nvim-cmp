@@ -663,6 +663,11 @@ sources[n].max_item_count~
   The source-specific maximum item count option
   Note: This is applied before sorting, so items that aren't well-matched may be selected.
 
+                                                 *cmp-config.sources[n].enabled*
+sources[n].enabled~
+  `boolean | fun(ctx: cmp.Context): boolean`
+  Whether this source should be enabled.
+
                                              *cmp-config.sources[n].group_index*
 sources[n].group_index~
   `number`

@@ -174,6 +174,7 @@ cmp.ItemField = {
 
 ---@class cmp.SourceConfig
 ---@field public name string
+---@field public enabled nil|boolean|fun(ctx: cmp.Context): boolean
 ---@field public option table|nil
 ---@field public priority integer|nil
 ---@field public trigger_characters string[]|nil
