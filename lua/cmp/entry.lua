@@ -407,11 +407,12 @@ end
 ---Match line.
 ---@param input string
 ---@param matching_config cmp.MatchingConfig
+---@param keyword_pattern string|nil
 ---@return { score: integer, matches: table[] }
-entry.match = function(self, input, matching_config)
+entry.match = function(self, input, matching_config, keyword_pattern)
   -- https://www.lua.org/pil/11.6.html
   -- do not use '..' to allocate multiple strings
-  local cache_key = string.format('%s:%d:%d:%d:%d:%d:%d:%d', input, self.resolved_completion_item and 1 or 0, matching_config.disallow_fuzzy_matching and 1 or 0, matching_config.disallow_partial_matching and 1 or 0, matching_config.disallow_prefix_unmatching and 1 or 0, matching_config.disallow_partial_fuzzy_matching and 1 or 0, matching_config.disallow_symbol_nonprefix_matching and 1 or 0, matching_config.disallow_case_insensitive_matching and 1 or 0)
+  local cache_key = string.format('%s:%d:%d:%d:%d:%d:%d:%d:%s', input, self.resolved_completion_item and 1 or 0, matching_config.disallow_fuzzy_matching and 1 or 0, matching_config.disallow_partial_matching and 1 or 0, matching_config.disallow_prefix_unmatching and 1 or 0, matching_config.disallow_partial_fuzzy_matching and 1 or 0, matching_config.disallow_symbol_nonprefix_matching and 1 or 0, matching_config.disallow_case_insensitive_matching and 1 or 0, keyword_pattern or '')
   local matched = self.match_cache:get(cache_key)
   if matched then
     if self.match_view_args_ret and self.match_view_args_ret.input ~= input then
@@ -421,13 +422,13 @@ entry.match = function(self, input, matching_config)
     end
     return matched
   end
-  matched = self:_match(input, matching_config)
+  matched = self:_match(input, matching_config, keyword_pattern)
   self.match_cache:set(cache_key, matched)
   return matched
 end
 
 ---@package
-entry._match = function(self, input, matching_config)
+entry._match = function(self, input, matching_config, keyword_pattern)
   local completion_item = self.completion_item
   local option = {
     disallow_fuzzy_matching = matching_config.disallow_fuzzy_matching,
@@ -436,6 +437,7 @@ entry._match = function(self, input, matching_config)
     disallow_prefix_unmatching = matching_config.disallow_prefix_unmatching,
     disallow_symbol_nonprefix_matching = matching_config.disallow_symbol_nonprefix_matching,
     disallow_case_insensitive_matching = matching_config.disallow_case_insensitive_matching,
+    keyword_pattern = keyword_pattern,
     synonyms = {
       self.word,
       self.completion_item.label,
