@@ -355,11 +355,17 @@ cmp.setup = setmetatable({
 })
 
 -- In InsertEnter autocmd, vim will detects mode=normal unexpectedly.
+local prepared = false
 local on_insert_enter = function()
+  -- Register the keymaps at least once, even when cmp is disabled, so they
+  -- exist if cmp becomes enabled without a new InsertEnter.
+  if not prepared or config.enabled() then
+    prepared = true
+    cmp.core:prepare()
+  end
   if config.enabled() then
     cmp.config.compare.scopes:update()
     cmp.config.compare.locality:update()
-    cmp.core:prepare()
     cmp.core:on_change('InsertEnter')
   end
 end
