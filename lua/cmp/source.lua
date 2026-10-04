@@ -129,6 +129,7 @@ source.get_entries = function(self, ctx)
   local entries = {}
   local matching_config = self:get_matching_config()
   local keyword_pattern = self:get_keyword_pattern()
+  local hide_snippets = config.get().snippet.hide_snippets
   local filtering_context_budget = config.get().performance.filtering_context_budget / 1000
 
   local stime = (vim.uv or vim.loop).hrtime() / 1000000
@@ -145,7 +146,8 @@ source.get_entries = function(self, ctx)
       e.matches = match.matches
       e.exact = e.filter_text == inputs[o] or e.word == inputs[o]
 
-      if entry_filter(e, ctx) then
+      local show_entry = not hide_snippets or e:get_kind() ~= types.lsp.CompletionItemKind.Snippet
+      if show_entry and entry_filter(e, ctx) then
         entries[#entries + 1] = e
       end
     end

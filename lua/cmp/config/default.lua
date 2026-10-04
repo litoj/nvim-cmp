@@ -36,6 +36,7 @@ return function()
       end or function(_)
         error('snippet engine is not configured.')
       end,
+      hide_snippets = false,
     },
 
     completion = {

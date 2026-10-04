@@ -168,6 +168,7 @@ cmp.ItemField = {
 
 ---@class cmp.SnippetConfig
 ---@field public expand fun(args: cmp.SnippetExpansionParams)
+---@field public hide_snippets boolean
 
 ---@class cmp.ExperimentalConfig
 ---@field public ghost_text cmp.GhostTextConfig|boolean
