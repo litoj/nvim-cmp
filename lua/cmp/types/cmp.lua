@@ -46,6 +46,8 @@ cmp.ItemField = {
 ---@class cmp.ConfirmOption
 ---@field public behavior cmp.ConfirmBehavior
 ---@field public commit_character? string
+---@field public select? boolean
+---@field public selectIfUnique? boolean
 
 ---@class cmp.SelectOption
 ---@field public behavior cmp.SelectBehavior
