@@ -234,6 +234,16 @@ cmp.close_docs = cmp.sync(function()
   end
 end)
 
+---Toggle the documentation window.
+cmp.toggle_docs = cmp.sync(function()
+  if not cmp.visible_docs() then
+    cmp.core.view:open_docs()
+  else
+    cmp.core.view:close_docs()
+  end
+  return true
+end)
+
 ---Confirm completion
 cmp.confirm = cmp.sync(function(option, callback)
   option = option or {}

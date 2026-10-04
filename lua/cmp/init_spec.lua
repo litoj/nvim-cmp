@@ -70,4 +70,44 @@ describe('cmp', function()
     assert.is.falsy(state.confirmed)
     assert.are.same({ 'A' }, state.buffer)
   end)
+
+  it('toggle_docs opens and closes the documentation window', function()
+    -- Keep the docs closed on entry change so only the toggle drives them.
+    config.set_global({ view = { docs = { auto_open = false } } })
+    local s = source.new('spec', {
+      get_position_encoding_kind = function()
+        return types.lsp.PositionEncodingKind.UTF16
+      end,
+      complete = function(_, _, callback)
+        callback({
+          {
+            label = 'AIUEO',
+            documentation = { value = 'docs text' },
+          },
+        })
+      end,
+    })
+    cmp.core:register_source(s)
+
+    feedkeys.call('iA', 'n', function()
+      cmp.core:complete(cmp.core:get_context({ reason = types.cmp.ContextReason.Manual }))
+      vim.wait(5000, function()
+        return cmp.core.view:visible()
+      end)
+      cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+      assert.is.truthy(cmp.core.view:get_selected_entry())
+
+      assert.is.truthy(cmp.toggle_docs())
+      vim.wait(5000, function()
+        return cmp.core.view.docs_view:visible()
+      end)
+      assert.is.truthy(cmp.visible_docs())
+
+      assert.is.truthy(cmp.toggle_docs())
+      vim.wait(5000, function()
+        return not cmp.core.view.docs_view:visible()
+      end)
+      assert.is.falsy(cmp.visible_docs())
+    end)
+  end)
 end)
