@@ -92,11 +92,18 @@ compare.kind = function(entry1, entry2)
   return nil
 end
 
----sort_text: Entries will be ranked according to the lexicographical order of sortText.
+---sort_text: Entries will be ranked according to the lexicographical order of sortText, falling back to the label.
 ---@type cmp.ComparatorFunction
 compare.sort_text = function(entry1, entry2)
   if entry1.completion_item.sortText and entry2.completion_item.sortText then
     local diff = vim.stricmp(entry1.completion_item.sortText, entry2.completion_item.sortText)
+    if diff < 0 then
+      return true
+    elseif diff > 0 then
+      return false
+    end
+  elseif entry1.completion_item.label and entry2.completion_item.label then
+    local diff = vim.stricmp(entry1.completion_item.label, entry2.completion_item.label)
     if diff < 0 then
       return true
     elseif diff > 0 then
