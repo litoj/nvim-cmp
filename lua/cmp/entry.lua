@@ -512,7 +512,12 @@ entry.get_documentation = function(self)
   local documents = {}
 
   -- detail
-  if item.detail and item.detail ~= '' then
+  -- Some servers send `detail` as a table of lines instead of a string.
+  local detail = item.detail
+  if type(detail) == 'table' then
+    detail = detail[1]
+  end
+  if detail and detail ~= '' then
     local ft = self.context.filetype
     local dot_index = string.find(ft, '%.')
     if dot_index ~= nil then
@@ -520,7 +525,7 @@ entry.get_documentation = function(self)
     end
     table.insert(documents, {
       kind = types.lsp.MarkupKind.Markdown,
-      value = ('```%s\n%s\n```'):format(ft, str.trim(item.detail)),
+      value = ('```%s\n%s\n```'):format(ft, str.trim(detail)),
     })
   end
 

@@ -363,4 +363,15 @@ describe('entry', function()
     assert.are.equal(e.offset, 12)
     assert.are.equal(e:get_vim_item(e.offset).word, 'getPath()')
   end)
+
+  it('[#1832] table detail does not break documentation', function()
+    local state = spec.state('foo', 1, 4)
+    local e = entry.new(state.manual(), state.source(), {
+      label = 'foo',
+      detail = { 'first line', 'second line' },
+    })
+    local docs = e:get_documentation()
+    assert.is.truthy(#docs > 0)
+    assert.is.truthy(table.concat(docs, '\n'):find('first line', 1, true))
+  end)
 end)
