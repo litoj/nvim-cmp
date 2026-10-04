@@ -89,6 +89,7 @@ describe('cmp', function()
     })
     cmp.core:register_source(s)
 
+    local toggled = false
     feedkeys.call('iA', 'n', function()
       cmp.core:complete(cmp.core:get_context({ reason = types.cmp.ContextReason.Manual }))
       vim.wait(5000, function()
@@ -108,6 +109,12 @@ describe('cmp', function()
         return not cmp.core.view.docs_view:visible()
       end)
       assert.is.falsy(cmp.visible_docs())
+      toggled = true
+    end)
+    -- Mode 'n' only queues the keys; the 'x' call runs them inside this test
+    -- instead of leaking the callback into the next test that flushes keys.
+    feedkeys.call('', 'x', function()
+      assert.is.truthy(toggled)
     end)
   end)
 end)
