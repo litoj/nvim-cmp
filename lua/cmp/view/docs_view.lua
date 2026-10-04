@@ -59,6 +59,7 @@ docs_view.open = function(self, e, view, bottom_up)
     local opts = {
       max_width = max_width - border_info.horiz,
     }
+    opts.wrap_at = opts.max_width
     if documentation.max_height > 0 then
       opts.max_height = documentation.max_height
     end
@@ -72,6 +73,7 @@ docs_view.open = function(self, e, view, bottom_up)
   local width, height = vim.lsp.util._make_floating_popup_size(vim.api.nvim_buf_get_lines(self.window:get_buffer(), 0, -1, false), {
     max_width = max_width - border_info.horiz,
     max_height = documentation.max_height - border_info.vert,
+    wrap_at = max_width - border_info.horiz,
   })
   if width <= 0 or height <= 0 then
     return self:close()
